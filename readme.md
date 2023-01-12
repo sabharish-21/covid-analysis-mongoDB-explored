@@ -97,18 +97,9 @@ Sample username and password : <br>
 
 ## Analysis Images
 
-<img class=mobile-image src="images\analysis1.png" />
+![Analysis One](./images/analysis1.png) ![Analysis Two](./images/analysis2.png) 
+<img class=mobile-image src="" />
 <img class=mobile-image src="images\analysis4.png" />
 <img class=mobile-image src="images\analysis2.png" />
 <img class=mobile-image src="images\analysis5.png" />
 <img class=mobile-image src="images\analysis3.png" />
-
-<style>
-  .img {
-    display: inline-block;
-  }
-  img.mobile-image {
-    width: 49%;
-    display: inline-block;
-  }
-</style>
