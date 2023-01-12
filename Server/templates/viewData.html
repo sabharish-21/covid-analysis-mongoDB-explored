@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block mainCode %}
+    <br>
+    <hr>
+    <div class="container-fluid pt-4 px-4">
+        <div class="bg-light text-center rounded p-4">
+            <h2 class="mb-0">View Data District-Vise</h2>
+        </div>
+    </div>
+    <hr>
+    <br>
+    <div class="container-fluid pt-4 px-4">
+        <div class="bg-light text-center rounded p-4">
+            <div class="row">
+                <div class="col">
+                    <label for="stateName"><b>Select the State : </b></label>
+                    <select class="form-select form-select-sm mb-3" aria-label=".form-select-sm example" id="stateName"
+                            onchange="changeDistrict(this.value)">
+                        <option>Select State</option>
+                        {% for i in states %}
+                            <option value="{{ i }}">{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col">
+                    <label for="districtName"><b>Select the District : </b></label>
+                    <select class="form-select form-select-sm mb-3" aria-label=".form-select-sm example"
+                            id="districtName" onchange="getData(this.value)">
+                        <option>Select District</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="container-fluid pt-4 px-4">
+        <div class="bg-light text-center rounded p-4">
+            <h2 class="mb-0">Covid Data</h2>
+        </div>
+        <br>
+        <div class="row">
+            <div class="card-body table-responsive p-0" style="height: 550px;">
+                <table class="table table-borderless">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Cases Count</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th scope="row">Confirmed</th>
+                        <td><input class="form-control form-control-sm" disabled type="text" autocomplete="off"
+                                   id="confirmedCount" placeholder="Confirmed Cases"
+                                   onkeypress="return isNumber(event)"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Recovered</th>
+                        <td><input class="form-control form-control-sm" disabled type="text" autocomplete="off"
+                                   id="recoveredCount" placeholder="Recovered Cases"
+                                   onkeypress="return isNumber(event)"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Active</th>
+                        <td><input class="form-control form-control-sm" disabled type="text" autocomplete="off"
+                                   id="activeCount" placeholder="Active Cases" onkeypress="return isNumber(event)"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Deceased</th>
+                        <td><input class="form-control form-control-sm" disabled type="text" autocomplete="off"
+                                   id="deceasedCount" placeholder="Deceased Cases" onkeypress="return isNumber(event)">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <hr>
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-secondary" onclick="changeState(1)">Modify</button>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-success" id="updateBtn" style="display:none;"
+                                onclick="changeData()">
+                            Update
+                        </button>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-danger" id="cancelBtn" style="display:none;" onclick="changeState(0)">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block scriptBlock %}
+    <script type="text/javascript">
+        document.getElementById("dataNav").className = 'nav-link dropdown-toggle active';
+    </script>
+    <script type="text/javascript">
+        function changeDistrict(value) {
+            if (value === 'Select State')
+                return
+            $.ajax({
+                method: "GET",
+                url: '/getDistrict',
+                data: {
+                    'state': value
+                },
+                success: function (data) {
+                    $("#districtName").empty();
+                    let select = document.getElementById('districtName');
+                    const opt = document.createElement('option');
+                    opt.innerHTML = 'Select District';
+                    select.appendChild(opt);
+                    for (let i = 0; i < data.district.length; i++) {
+                        let opt = document.createElement('option');
+                        opt.value = data.district[i];
+                        opt.innerHTML = data.district[i];
+                        select.appendChild(opt);
+                    }
+                },
+                error: function (error_data) {
+                    console.log(error_data);
+                }
+            })
+        }
+
+        function getData(value) {
+            if (value === 'Select District')
+                return
+            let state = document.getElementById('stateName').value;
+            let district = document.getElementById('districtName').value;
+            $.ajax({
+                method: "GET",
+                url: '/getDistrictData',
+                data: {
+                    'state': state,
+                    'district': district
+                },
+                success: function (data) {
+                    document.getElementById("confirmedCount").value = data.confirmed;
+                    document.getElementById("activeCount").value = data.active;
+                    document.getElementById("recoveredCount").value = data.recovered;
+                    document.getElementById("deceasedCount").value = data.deceased;
+                },
+                error: function (error_data) {
+                    console.log(error_data);
+                }
+            })
+        }
+
+        function changeState(value) {
+            let state = document.getElementById('stateName').value;
+            let district = document.getElementById('districtName').value;
+            if (value === 1 && state !== 'Select State' && district !== 'Select District') {
+                document.getElementById("cancelBtn").style.display = 'block';
+                document.getElementById("updateBtn").style.display = 'block';
+
+                document.getElementById("confirmedCount").disabled = false;
+                document.getElementById("recoveredCount").disabled = false;
+                document.getElementById("activeCount").disabled = false;
+                document.getElementById("deceasedCount").disabled = false;
+
+            } else {
+                document.getElementById("cancelBtn").style.display = 'none';
+                document.getElementById("updateBtn").style.display = 'none';
+
+                document.getElementById("confirmedCount").disabled = true;
+                document.getElementById("recoveredCount").disabled = true;
+                document.getElementById("activeCount").disabled = true;
+                document.getElementById("deceasedCount").disabled = true;
+                getData(district);
+            }
+        }
+
+        function changeData() {
+            let state = document.getElementById('stateName').value;
+            let district = document.getElementById('districtName').value;
+            $.ajax({
+                method: "GET",
+                url: '/updateDistrictData',
+                data: {
+                    'state': state,
+                    'district': district,
+                    'Confirmed': document.getElementById("confirmedCount").value,
+                    'Active': document.getElementById("activeCount").value,
+                    'Recovered': document.getElementById("recoveredCount").value,
+                    'Deceased': document.getElementById("deceasedCount").value,
+
+                },
+                success: function (data) {
+                    changeState(0);
+                },
+                error: function (error_data) {
+                    console.log(error_data);
+                }
+            })
+        }
+
+        function isNumber(evt) {
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        }
+    </script>
+{% endblock %}

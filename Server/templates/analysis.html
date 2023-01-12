@@ -1,0 +1,434 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block mainCode %}
+    <br>
+    <hr>
+    <div class="container-fluid pt-4 px-4">
+        <div class="bg-light text-center rounded p-4">
+            <h2 class="mb-0">Analysis of Vaccination Data</h2>
+        </div>
+    </div>
+    <hr>
+    <br>
+    <!-- Analysis One Start -->
+    <div id="analysisOne">
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h5 class="mb-0">Analysis One</h5>
+                </div>
+                <div class="row">
+                    The corresponding mongoDB code : <br>
+                    <code>
+                        db.vaccinations.aggregate([ <br>
+                        {'$match': {'country': {'$in': ['Austria', 'Hong Kong', 'England', 'Argentina', 'Australia']}}},
+                        <br>
+                        {'$group': {'_id': "$country", 'Total': {'$max': '$total_vaccinations'}}}<br>
+                        ])
+                    </code>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-9">
+                        <canvas id="myChartOne"></canvas>
+                    </div>
+                    <div class="col-sm-2">
+                        <h6><b>Plotting total vaccination count of each country</b></h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Analysis One End -->
+
+    <!-- Analysis Two Start -->
+    <div id="analysisTwo">
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h5 class="mb-0">Analysis Two</h5>
+                </div>
+                <div class="row">
+                    The corresponding mongoDB code : <br>
+                    <code>
+                        db.vaccinations.find([ <br>
+                        {'country': "England", 'Australia', 'Argentina'], 'daily_vaccinations': {'$exists': 'true',
+                        '$ne': 'null'}},<br>
+                        {'_id': 0, 'daily_vaccinations': 1, 'date': 1}<br>
+                        )]
+                    </code>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-9">
+                        <canvas id="myChartTwo"></canvas>
+                    </div>
+                    <div class="col-sm-2">
+                        <h6><b>Plotting daily vaccination details for each country</b></h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Analysis Two End -->
+
+    <!-- Analysis Three Start -->
+    <div id="analysisThree">
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h5 class="mb-0">Analysis Three</h5>
+                </div>
+                <div class="row">
+                    The corresponding mongoDB code : <br>
+                    <code>
+                        db.vaccinations.find([ <br>
+                        {}
+                        <br>
+                        {'vaccines': 1, '_id': 0}<br>
+                        ])
+                    </code>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-9">
+                        <canvas id="myChartThree"></canvas>
+                    </div>
+                    <div class="col-sm-2">
+                        <h6><b>Plotting total number of countries used a particular kind of vaccine</b></h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Analysis Three End -->
+
+    <!-- Analysis Four Start -->
+    <div id="analysisFour">
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h5 class="mb-0">Analysis Four</h5>
+                </div>
+                <div class="row">
+                    The corresponding mongoDB code : <br>
+                    <code>
+                        db.vaccinations.aggregate([ <br>
+                        {'$match': {'country': {'$in': ['Austria', 'Hong Kong', 'England', 'Argentina', 'Australia']}}},
+                        <br>
+                        {'$group': {'_id': "$country", 'Totalp': {'$max': '$people_vaccinated'},
+                        'Totalf': {'$max': '$people_fully_vaccinated'}}}<br>
+                        ])
+                    </code>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-9">
+                        <canvas id="myChartFour"></canvas>
+                    </div>
+                    <div class="col-sm-2">
+                        <h6><b>Plotting Fully vs Partially Vaccinated People</b></h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Analysis Four End -->
+
+    <!-- Analysis Five Start -->
+    <div id="analysisFive">
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h5 class="mb-0">Analysis Five</h5>
+                </div>
+                <div class="row">
+                    The corresponding mongoDB code : <br>
+                    <code>
+                        db.vaccinations.aggregate([ <br>
+                        {'$match': {'country': {'$in': ['Canada', 'England', 'Argentina', 'Australia', 'Hong Kong']}}},
+                        <br>
+                        {'$group': {'_id': "$country", 'm1': {'$max': '$total_vaccinations'}, 'm2': {'$max':
+                        '$people_vaccinated'}}}
+                        <br>
+                        ])
+                    </code>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-9">
+                        <canvas id="myChartFive"></canvas>
+                    </div>
+                    <div class="col-sm-2">
+                        <h6><b>Plotting no.of.vaccines wasted in each country</b></h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Analysis Five End -->
+    <!-- Widgets End -->
+
+{% endblock %}
+
+{% block scriptBlock %}
+    <script type="text/javascript">
+        document.getElementById("analysisNav").className = 'nav-item nav-link active';
+    </script>
+    <script>
+        $.ajax({
+            method: "GET",
+            url: '/graphData',
+            success: function (data) {
+                drawDoughNutGraph(data.one, 'myChartOne');
+                drawLineGraph(data.two, 'myChartTwo');
+                drawBarGraph(data.three, 'myChartThree');
+                drawBarGraphA4(data.four, 'myChartFour');
+                drawPolarAreaGraph(data.five, 'myChartFive');
+
+            },
+            error: function (error_data) {
+                console.log(error_data);
+            }
+        })
+
+        function drawDoughNutGraph(data, id) {
+            const labels = data.label;
+            const chartLabel = data.chartLabel;
+            const chartData = data.data;
+            const ctx = document.getElementById(id).getContext('2d');
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: chartLabel,
+                        data: chartData,
+                        backgroundColor: [
+                            'rgb(255, 99, 132)',
+                            'rgb(54, 162, 235)',
+                            'rgb(255, 205, 86)',
+                            'rgb(75, 192, 192)',
+                            'rgb(153, 102, 255)',
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: chartLabel
+                    },
+                },
+            });
+
+        }
+
+        function drawLineGraph(data, id) {
+            const labels = data.label;
+            const chartLabel = data.chartLabel;
+            const chartData = data.data;
+            const ctx = document.getElementById(id).getContext('2d');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: chartLabel[0],
+                            backgroundColor: 'rgba(255, 10, 150, 0.2)',
+                            borderColor: 'rgb(0, 0, 0)',
+                            data: chartData[0]
+                        }, {
+                            label: chartLabel[1],
+                            backgroundColor: 'rgba(210, 99, 132, 0.2)',
+                            borderColor: 'rgb(0, 0, 0)',
+                            data: chartData[1]
+                        }, {
+                            label: chartLabel[2],
+                            backgroundColor: 'rgba(80, 162, 235, 0.2)',
+                            borderColor: 'rgb(0, 0, 0)',
+                            data: chartData[2]
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    title: {
+                        display: true,
+                        text: 'Daily Vaccinations of each country'
+                    },
+                    stacked: false,
+                    scales: {
+                        xAxes: [{
+                            display: true
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }],
+                    }
+                }
+            });
+        }
+
+        function drawBarGraph(data, id) {
+            const labels = data.label;
+            const chartLabel = data.chartLabel;
+            const chartData = data.data;
+            const ctx = document.getElementById(id).getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: chartLabel,
+                        data: chartData,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)',
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)',
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)',
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: 'rgba(0, 0, 0)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: chartLabel
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+
+        function drawBarGraphA4(data, id) {
+            const labels = data.label;
+            const chartData1 = data.dataOne;
+            const chartData2 = data.dataTwo;
+            const ctx = document.getElementById(id).getContext('2d');
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Fully Vaccinated',
+                            data: chartData1,
+                            borderColor: 'rgba(0,0,0)',
+                            backgroundColor: 'rgb(255, 99, 132)',
+                        },
+                        {
+                            label: 'Partially Vaccinated',
+                            data: chartData2,
+                            borderColor: 'rgba(0,0,0)',
+                            backgroundColor: 'rgb(75, 192, 192)',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Fully Vaccinated vs Partial Vaccinated'
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+
+        function drawPolarAreaGraph(data, id) {
+            const labels = data.label;
+            const chartLabel = data.chartLabel;
+            const chartData = data.data;
+            const ctx = document.getElementById(id).getContext('2d');
+
+            new Chart(ctx, {
+                type: 'polarArea',
+
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: chartLabel,
+                        backgroundColor: [
+                            'rgb(255, 99, 132)',
+                            'rgb(75, 192, 192)',
+                            'rgb(255, 205, 86)',
+                            'rgb(201, 203, 207)',
+                            'rgb(54, 162, 235)'
+                        ],
+                        borderColor: 'rgb(0,0,0)',
+                        data: chartData,
+
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: chartLabel
+                    },
+                    scales: {
+                        xAxes: [{
+                            display: true
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+
+
+        }
+    </script>
+{% endblock %}

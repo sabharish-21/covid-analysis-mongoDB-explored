@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block mainCode %}
+    <div class="container-fluid pt-4 px-4">
+        <div class="row g-4">
+            <div class="col-sm-6 col-xl-3">
+                <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                    <i class="fa fa-chart-area fa-3x text-primary"></i>
+                    <div class="ms-3">
+                        <p class="mb-2">Total State</p>
+                        <h6 class="mb-0">{{ data.totalState }}</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                    <i class="fa fa-receipt fa-3x text-primary"></i>
+                    <div class="ms-3">
+                        <p class="mb-2">Total District</p>
+                        <h6 class="mb-0">{{ data.totalDistrict }}</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                    <i class="fa fa-chart-line fa-3x text-primary"></i>
+                    <div class="ms-3">
+                        <p class="mb-2">Total Confirmed</p>
+                        <h6 class="mb-0" id="block_totalConfirmed">{{ data.totalConfirmed }}</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                    <i class="fa fa-chart-pie fa-3x text-primary"></i>
+                    <div class="ms-3">
+                        <p class="mb-2">Total Active</p>
+                        <h6 class="mb-0" id="block_totalActive">{{ data.totalActive }}</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row g-4">
+            <div class="col-sm-6 col-xl-3">
+                <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                    <i class="fa fa-chart-bar fa-3x text-primary"></i>
+                    <div class="ms-3">
+                        <p class="mb-2">Total Recovered</p>
+                        <h6 class="mb-0" id="block_totalRecovered">{{ data.totalRecovered }}</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                    <i class="fa fa-book-dead fa-3x text-primary"></i>
+                    <div class="ms-3">
+                        <p class="mb-2">Total Deceased</p>
+                        <h6 class="mb-0" id="block_totalDeceased">{{ data.totalDeceased }}</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <div class="container-fluid pt-4 px-4">
+        <div class="bg-light text-center rounded p-4">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h6 class="mb-0">Top Affected District based on Active Cases</h6>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table text-start align-middle table-bordered table-hover mb-0" id="tableData">
+                    <thead>
+                    <tr class="text-dark">
+                        <th scope="col">Most Affected District</th>
+                        <th scope="col">State</th>
+                        <th scope="col">Active</th>
+                        <th scope="col">Confirmed</th>
+                        <th scope="col">Recovered</th>
+                        <th scope="col">Deceased</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in data.table %}
+                        <tr>
+                            <td>{{ row.District }}</td>
+                            <td>{{ row.State }}</td>
+                            <td>{{ row.Active }}</td>
+                            <td>{{ row.Confirmed }}</td>
+                            <td>{{ row.Recovered }}</td>
+                            <td>{{ row.Deceased }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+{% endblock %}
+
+{% block scriptBlock %}
+    <script type="text/javascript">
+        document.getElementById("dashboardNav").className = 'nav-item nav-link active';
+    </script>
+    <script type="text/javascript">
+
+        function dataStreaming() {
+            $.ajax({
+                method: "GET",
+                url: '/districtStream',
+                success: function (data) {
+                    document.getElementById('block_totalConfirmed').innerText = data.totalConfirmed;
+                    document.getElementById('block_totalActive').innerText = data.totalActive;
+                    document.getElementById('block_totalRecovered').innerText = data.totalRecovered;
+                    document.getElementById('block_totalDeceased').innerText = data.totalDeceased;
+                    changeTable(data.table);
+                    dataStreaming();
+                },
+                error: function (error_data) {
+                    console.log(error_data);
+                }
+            })
+        }
+
+        dataStreaming();
+
+        function changeTable(data) {
+            $("#tableData tbody tr").remove();
+            for (let row in data) {
+                $("#tableData > tbody:last-child").append(`
+                        <tr>
+                            <td>${data[row].District}</td>
+                            <td>${data[row].State}</td>
+                            <td>${data[row].Active}</td>
+                            <td>${data[row].Confirmed}</td>
+                            <td>${data[row].Recovered}</td>
+                            <td>${data[row].Deceased}</td>
+
+                        </tr>
+                    `);
+            }
+        }
+    </script>
+{% endblock %}
