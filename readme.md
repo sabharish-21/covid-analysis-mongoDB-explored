@@ -90,9 +90,9 @@ Sample username and password : <br>
 # <b>Images : </b>
 
 ![Login Page](./images/login.png)
-![Dashboard Page](images\dashboard.png "Dashboard Page")
-![Analysis Page](images\analysis.png "Analysis Page")
-![Edit Data Page](images\editdata.png "Edit Data Page")
+![Dashboard Page](./images/dashboard.png)
+![Analysis Page](./images/analysis.png)
+![Edit Data Page](./images/editdata.png)
 
 
 ## Analysis Images
